@@ -9,7 +9,7 @@ The manifest file `vcpkg.json` will contain all the dependencies that you want t
 This part will split in to two paths: [Command Line Interface (CLI)](#step-1-alternative-1---cli-editing) and  [Manual editing](#step-1-alternative-2---manual-editing). Choose the path that you feel most comfortable with.
 
 ### Step 1: Alternative 1 - CLI editing
->In the section [Manual editing](#manual-editing) file you can find another way of creating the manifest file if you're not comfortable with CLI.
+>In the section [Manual editing](#step-1-alternative-2---manual-editing) file you can find another way of creating the manifest file if you're not comfortable with CLI.
 
 Go to your directory and open the terminal (I recommend Windows Terminal or Command Prompt). 
 #### Creating the vcpkg.json
