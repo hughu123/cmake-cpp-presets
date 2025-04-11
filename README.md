@@ -3,6 +3,84 @@ A simple repo-guide to help you setup your project and get started coding!
 
 I reserve myself for any future changes that might render this guide irrelevant. - Hugo. H
 
+## TL;DR
+You need the following four (4) files:
+* `vcpkg.json`
+* `CMakePresets.json`
+* `CMakeUserPresets.json`
+* `CMakeLists.txt`
+
+### Quick info
+
+>`vcpkg.json` will contain all the libraries/dependencies you want in your project.
+
+```json
+{
+  "name": "...",
+  "description": "...",
+  "dependencies": [
+    "...",
+    "...",
+    "..."
+  ]
+}
+```
+
+>`CMakePresets.json` is the base preset that tells `CMake` where it can find the toolchain file from the `vcpkg` directory.
+
+```json
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "project-name",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ]
+}
+```
+
+>`CMakeUserPresets.json` caches/creates a variable of the full path to the `vcpkg` directory which is used when inheriting `CMakePresets.json`.
+
+```json
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "...",
+      "inherits": "project-name",
+      "environment": {
+        "VCPKG_ROOT": "C:/your/path/to/vcpkg"
+      }
+    }
+  ]
+}
+```
+
+>`CMakeLists.txt` Bruh
+
+```text
+cmake_minimum_required(VERSION 3.10)
+
+project(your-project-name)
+
+find_package(fmt CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+
+add_executable(tncg15-raytracer main.cpp)
+
+target_link_libraries(tncg15-raytracer PRIVATE fmt::fmt glm::glm)
+```
+
+## Setting up your project with CMake guide
+The following sections contains some info about the different steps to ensure that your libraries/dependencies will be recognized by the compiler and linked properly. 
+
+With this setup you can choose to code in Visual Studio Code (VS Code) or in Visual Studio (VS). If your choice is VS Code ensure you have the CMake Extension installed and 
+
 ## Step 1: Creating your manifest file (vcpkg.json)
 The manifest file `vcpkg.json` will contain all the dependencies that you want to include in your project. 
 
