@@ -3,7 +3,10 @@ A simple repo-guide to help you setup your project and get started coding!
 
 I reserve myself for any future changes that might render this guide irrelevant. - Hugo. H
 
-## TL;DR
+>DEV NOTE: This guide is a work in progress (wip). Use the [Not so TL;DR](#not-so-tldr) for the time being and try your way from there! - Hugo
+
+
+## Not so TL;DR
 You need the following four (4) files:
 * `vcpkg.json`
 * `CMakePresets.json`
@@ -12,7 +15,7 @@ You need the following four (4) files:
 
 ### Quick info
 
->`vcpkg.json` will contain all the libraries/dependencies you want in your project.
+`vcpkg.json` will contain all the libraries/dependencies you want in your project.
 
 ```json
 {
@@ -26,7 +29,7 @@ You need the following four (4) files:
 }
 ```
 
->`CMakePresets.json` is the base preset that tells `CMake` where it can find the toolchain file from the `vcpkg` directory.
+`CMakePresets.json` is the base preset that tells `CMake` where it can find the toolchain file from the `vcpkg` directory.
 
 ```json
 {
@@ -44,14 +47,16 @@ You need the following four (4) files:
 }
 ```
 
->`CMakeUserPresets.json` caches/creates a variable of the full path to the `vcpkg` directory which is used when inheriting `CMakePresets.json`.
+`CMakeUserPresets.json` caches/creates a variable of the full path to the `vcpkg` directory which is used when inheriting `CMakePresets.json`.
+
+>NOTE: Making sure the `CMakeUserPresets.json` inherits the correct `CMakePresets.json` is VERY important. The `inherits` variable (from `CMakeUserPresets.json`) and `name` (from `CMakePresets.json`) MUST be the same. 
 
 ```json
 {
   "version": 2,
   "configurePresets": [
     {
-      "name": "...",
+      "name": "yourName-preset",
       "inherits": "project-name",
       "environment": {
         "VCPKG_ROOT": "C:/your/path/to/vcpkg"
@@ -61,7 +66,7 @@ You need the following four (4) files:
 }
 ```
 
->`CMakeLists.txt` Bruh
+The `CMakeLists.txt` will be the final step in the project setup. Here you will make sure that `CMake` knows where to look for your packages/dependencies. Utilizing `find_package()` will tell you how to link the package. In most cases it will want you to add the  `target_link_libraries()` for the specific library/dependency. Here's an example of the `CMakeLists.txt`:
 
 ```text
 cmake_minimum_required(VERSION 3.10)
@@ -71,12 +76,24 @@ project(your-project-name)
 find_package(fmt CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-add_executable(tncg15-raytracer main.cpp)
+add_executable(your-project-name main.cpp)
 
-target_link_libraries(tncg15-raytracer PRIVATE fmt::fmt glm::glm)
+target_link_libraries(your-project-name PRIVATE fmt::fmt glm::glm)
+
+target_include_directories(your-project-name PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 ```
 
-## Setting up your project with CMake guide
+Including the `target_include_directories()` function (with the correct arguments) tells `CMake` to also include files from that directory. Very useful for when creating your own header files. NOTE: That to use them, instead of the regular `#include <glm/glm.hpp>`, you would have to use `#include "file.h"` instead.
+
+In Visual Studio Code, the CMake Extension will do the final work for you (if your environment and compiler are correct e.g. you have the Visual Studio 17 2022 compiler. You can of course change compiler/generator by changing that value in the from the `CMakePresets.json`).
+
+For development in `Visual Studio 2022` open the Windows Terminal (wt) or Command Prompt (cmd) and navigate to the directory containing all the files above. Here you run the command from CLI:
+
+`cmake --preset yourName-preset`
+
+This will create the `binaryFolder` as specified in `CMakePresets.json` and making sure `vcpkg-root` is found and used (thanks to `CMakeUserPresets.json`). 
+
+## FULL GUIDE: Setting up your project with CMake guide (wip)
 The following sections contains some info about the different steps to ensure that your libraries/dependencies will be recognized by the compiler and linked properly. 
 
 With this setup you can choose to code in Visual Studio Code (VS Code) or in Visual Studio (VS). If your choice is VS Code ensure you have the CMake Extension installed and 
